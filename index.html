@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary</title>
+    <style>
+        :root {
+            --primary-red: #8B0000;
+            --soft-pink: #FFC0CB;
+            --hot-pink: #FF69B4;
+            --deep-pink: #FF1493;
+            /* Professional Easing */
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--primary-red), var(--soft-pink));
+            background-attachment: fixed;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- BACKGROUND ANIMATIONS --- */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 192, 203, 0.6);
+            animation: float 10s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- PAGE TRANSITION SYSTEM --- */
+        .section {
+            display: none;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .section.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            /* Page Entrance Animation */
+            animation: pageIn 0.8s var(--ease-out-expo) forwards;
+        }
+
+        .section.exit {
+            display: flex;
+            z-index: 1;
+            /* Page Exit Animation */
+            animation: pageOut 0.6s var(--ease-out-expo) forwards;
+        }
+
+        @keyframes pageIn {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes pageOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.9); }
+        }
+
+        /* --- STAGGERED CONTENT ANIMATIONS --- */
+        .section.active .animate-up {
+            animation: slideUp 0.8s var(--ease-out-expo) both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Delay helpers for staggering */
+        .delay-1 { animation-delay: 0.2s !important; }
+        .delay-2 { animation-delay: 0.3s !important; }
+        .delay-3 { animation-delay: 0.4s !important; }
+        .delay-4 { animation-delay: 0.5s !important; }
+
+        /* --- COMPONENT STYLES --- */
+        #home h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            text-align: center;
+            text-shadow: 2px 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .cake {
+            font-size: 6rem;
+            margin: 20px 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        button {
+            background: var(--hot-pink);
+            color: #fff;
+            border: none;
+            padding: 18px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            background: var(--deep-pink);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Evasive Button Logic */
+        #no-button { position: absolute; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* Gallery Grid */
+        #gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 40px;
+        }
+
+        .polaroid {
+            background: #fff;
+            padding: 12px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            transform: rotate(-3deg);
+            transition: transform 0.4s var(--ease-out-expo);
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.1);
+            z-index: 10;
+        }
+
+        .polaroid p { color: #333; margin-top: 10px; font-weight: bold; text-align: center;}
+
+        /* Message Box */
+        .overlay {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .typing { font-size: 1.4rem; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            #gallery-container { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hearts" id="heart-container"></div>
+
+    <div id="home" class="section active">
+        <h1 class="animate-up">HAPPY ANNIVERSARY BABOO!</h1>
+        <div class="cake animate-up delay-1">🎂</div>
+        <div class="buttons animate-up delay-2">
+            <button onclick="showSection('gallery')">📸 View Gallery</button>
+            <button onclick="showSection('message')">💌 Sweet Message</button>
+            <button onclick="showSection('flirty1')">🔥 dil ki baat 1</button>
+            <button onclick="showSection('flirty2')">😘 dil ki baat 2</button>
+            <button onclick="showSection('proposal')">💍 The Last One</button>
+        </div>
+    </div>
+
+    <div id="gallery" class="section">
+        <h2 class="animate-up">will you like to make this types of Memories with me??</h2>
+        <div id="gallery-container">
+            <div class="polaroid animate-up delay-1">
+                <img src="https://tse3.mm.bing.net/th/id/OIP.Lyn20ywqvH7dPMlceS2lrgAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" style="width:100%" alt="Photo">
+                <p>wourld tour</p>
+            </div>
+            <div class="polaroid animate-up delay-2" style="transform: rotate(3deg);">
+                <img src="https://tse1.mm.bing.net/th/id/OIP.6Wi6l9qaqcMAnXnOkqFeQgHaFj?rs=1&pid=ImgDetMain&o=7&rm=3" style="width:100%" alt="Photo">
+                <p>Adventure Time</p>
+            </div>
+            <div class="polaroid animate-up delay-3">
+                <img src="https://img.freepik.com/premium-photo/indian-kids-with-parents-grandparents-sitting-isolated-white-background-studio-shot_466689-44936.jpg" style="width:100%" alt="Photo">
+                <p>family planing</p>
+            </div>
+        </div>
+        <button class="animate-up delay-4" onclick="showSection('home')">Back Home</button>
+    </div>
+
+    <div id="message" class="section">
+        <div class="overlay animate-up">
+            <div class="typing" id="typing-text"></div>
+        </div>
+        <br>
+        <button class="animate-up delay-4" onclick="showSection('home')">Back Home</button>
+    </div>
+
+    <div id="flirty1" class="section">
+        <h2 class="animate-up">dil ki kuch bata 1</h2>
+        <div class="overlay animate-up delay-1">
+            <p>You make my heart skip a beat every time I see you. Can't wait to spend forever with you, my love.</p>
+            <p>chao jitna lad lo par aur ja nahi sakti aap aa to gai mara dil ma par aur ja nahi pao gi jitna v</p>
+        </div>
+        <br>
+        <button class="animate-up delay-2" onclick="showSection('home')">Back Home</button>
+    </div>
+
+    <div id="flirty2" class="section">
+        <h2 class="animate-up">Flirty Note 2</h2>
+        <div class="overlay animate-up delay-1">
+            <p>Your smile lights up my world. You're the most beautiful person I know, inside and out.</p>
+            <p>tumhari muskan meri duniya ko roshan karti hai. tum bas eak bar mari ban jao phir kabhi khusi kabhi gam par jindigi bhar chalanga eak sang</p>
+        </div>
+        <br>
+        <button class="animate-up delay-2" onclick="showSection('home')">Back Home</button>
+    </div>
+
+    <div id="proposal" class="section">
+        <h2 class="animate-up">I have a question...</h2>
+        <div class="cake animate-up delay-1">💍</div>
+        <h3 class="animate-up delay-2">Will You be my forever partner?<br> My Ardhangani!!</h3>
+        <div class="animate-up delay-3" style="display: flex; gap: 20px;">
+            <button id="no-button" onmouseover="evade()">No</button>
+            <br>
+            <button onclick="showSection('love')">Yes!</button>
+        </div>
+    </div>
+
+    <div id="love" class="section">
+        <h2 class="animate-up">I Love Youuuuu!</h2>
+        <div class="cake animate-up delay-1">💖</div>
+        <p class="animate-up delay-2">Forever ever and ever </p>
+                <p class="animate-up delay-2">And always, my love. Thank you for saying yes!</p>
+        <button class="animate-up delay-3" onclick="showSection('home')">Back Home</button>
+    </div>
+
+    <script>
+        // --- PAGE NAVIGATION WITH ANIMATION ---
+        function showSection(sectionId) {
+            const currentSection = document.querySelector('.section.active');
+            const nextSection = document.getElementById(sectionId);
+
+            if (currentSection) {
+                currentSection.classList.remove('active');
+                currentSection.classList.add('exit');
+                
+                // Remove exit class after animation finishes
+                setTimeout(() => {
+                    currentSection.classList.remove('exit');
+                }, 600);
+            }
+
+            nextSection.classList.add('active');
+
+            if (sectionId === 'message') {
+                startTyping();
+            }
+        }
+
+        // --- TYPING ANIMATION ---
+        const messageText = "My dearest love,\n\nEvery moment with you is a treasure. Happy Anniversary! I love you more than words can say.\n\nForever yours.";
+        let typingInterval;
+
+        function startTyping() {
+            const el = document.getElementById('typing-text');
+            el.textContent = '';
+            let i = 0;
+            clearInterval(typingInterval);
+            
+            typingInterval = setInterval(() => {
+                if (i < messageText.length) {
+                    el.textContent += messageText[i];
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                }
+            }, 60);
+        }
+
+        // --- EVASIVE BUTTON ---
+        function evade() {
+            const btn = document.getElementById('no-button');
+            const x = Math.random() * (window.innerWidth -btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.left = `${x}px`;
+            btn.style.top = `${y}px`;
+            btn.style.position = 'fixed';
+        }
+
+        // --- GENERATE HEARTS ---
+        function initHearts() {
+            const container = document.getElementById('heart-container');
+            const icons = ['❤️', '💖', '💕', '✨'];
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        initHearts();
+    </script>
+</body>
+</html>
